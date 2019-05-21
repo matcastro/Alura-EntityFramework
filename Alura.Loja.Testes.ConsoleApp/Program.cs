@@ -12,6 +12,46 @@ namespace Alura.Loja.Testes.ConsoleApp
         {
             //GravarUsandoAdoNet();
             GravarUsandoEntity();
+            RecuperarProdutos();
+            AtualizarProduto();
+            RecuperarProdutos();
+            ExcluirProdutos();
+            RecuperarProdutos();
+        }
+
+        private static void AtualizarProduto()
+        {
+            using(var dao = new ProdutoDAO())
+            {
+                var produto = dao.Produtos().First();
+                produto.Nome += " - Editado";
+                dao.Atualizar(produto);
+            }
+        }
+
+        private static void ExcluirProdutos()
+        {
+            using(var dao = new ProdutoDAO())
+            {
+                var produtos = dao.Produtos();
+                foreach (var item in produtos)
+                {
+                    dao.Remover(item);
+                }
+            }
+        }
+
+        private static void RecuperarProdutos()
+        {
+            using(var dao = new ProdutoDAO())
+            {
+                var produtos = dao.Produtos();
+                Console.WriteLine($"Encontrados {produtos.Count} produto(s).");
+                foreach (var item in produtos)
+                {
+                    Console.WriteLine($"{item.Nome}");
+                }
+            }
         }
 
         private static void GravarUsandoEntity()
@@ -21,10 +61,9 @@ namespace Alura.Loja.Testes.ConsoleApp
             p.Categoria = "Livros";
             p.Preco = 19.89;
 
-            using (var contexto = new LojaContext())
+            using (var dao = new ProdutoDAO())
             {
-                contexto.Produtos.Add(p);
-                contexto.SaveChanges();
+                dao.Adicionar(p);
             }
         }
 
