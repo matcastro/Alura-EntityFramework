@@ -14,35 +14,32 @@ namespace Alura.Loja.Testes.ConsoleApp
     {
         static void Main(string[] args)
         {
-            using(var contexto = new LojaContext())
+            var produto = new Produto()
+            {
+                Nome = "Pão Francês",
+                Categoria = "Alimento",
+                PrecoUnitario = 0.4,
+                Unidade = "Unidade"
+            };
+
+            var compra = new Compra()
+            {
+                Quantidade = 6,
+                Produto = produto                
+            };
+            compra.Preco = compra.Quantidade * compra.Produto.PrecoUnitario;
+            using (var contexto = new LojaContext())
             {
                 var serviceProvider = contexto.GetInfrastructure();
                 var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
                 loggerFactory.AddProvider(SqlLoggerProvider.Create());
 
-                // AdicionarProduto(contexto);
-                var produtos = contexto.Produtos.ToList();
-                foreach (var produto in produtos)
-                {
-                    Console.WriteLine(produto);
-                }              
-
                 var entries = contexto.ChangeTracker.Entries();
-                ImprimeEstados(entries);
-                produtos[0].Nome = "Teste";
-                contexto.Update(produtos[0]);
-                ImprimeEstados(entries);
-                contexto.Remove(produtos[0]);
-                ImprimeEstados(entries);
-                produtos.Add(new Produto() { Nome = "Sorvete", Categoria = "Comida", PrecoUnitario = 5 });
-                contexto.Add(produtos[1]);
-                ImprimeEstados(entries);
-                contexto.Remove(produtos[1]);
-                ImprimeEstados(entries);
 
-                var entry = contexto.Entry(produtos[1]);
+                contexto.Add(compra);
+                ImprimeEstados(entries);
                 contexto.SaveChanges();
-                Console.WriteLine(entry.State);
+                ImprimeEstados(entries);
             }
         }
 
