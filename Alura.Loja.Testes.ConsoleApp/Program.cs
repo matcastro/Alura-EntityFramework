@@ -34,7 +34,7 @@ namespace Alura.Loja.Testes.ConsoleApp
                 ImprimeEstados(entries);
                 contexto.Remove(produtos[0]);
                 ImprimeEstados(entries);
-                produtos.Add(new Produto() { Nome = "Sorvete", Categoria = "Comida", Preco = 5 });
+                produtos.Add(new Produto() { Nome = "Sorvete", Categoria = "Comida", PrecoUnitario = 5 });
                 contexto.Add(produtos[1]);
                 ImprimeEstados(entries);
                 contexto.Remove(produtos[1]);
@@ -61,7 +61,7 @@ namespace Alura.Loja.Testes.ConsoleApp
             {
                 Nome = "Pasta de Dente",
                 Categoria = "Higiene",
-                Preco = 1.99
+                PrecoUnitario = 1.99
             };
             contexto.Add(produto);
             contexto.SaveChanges();

@@ -60,3 +60,5 @@ C:\git\Alura-EntityFramework\Alura.Loja.Testes.ConsoleApp\obj\Debug\Alura.Loja.T
 C:\git\Alura-EntityFramework\Alura.Loja.Testes.ConsoleApp\obj\Debug\Alura.Loja.Testes.ConsoleApp.csproj.CopyComplete
 C:\git\Alura-EntityFramework\Alura.Loja.Testes.ConsoleApp\obj\Debug\Alura.Loja.Testes.ConsoleApp.exe
 C:\git\Alura-EntityFramework\Alura.Loja.Testes.ConsoleApp\obj\Debug\Alura.Loja.Testes.ConsoleApp.pdb
+C:\git\Alura-EntityFramework\Alura.Loja.Testes.ConsoleApp\bin\Debug\Microsoft.EntityFrameworkCore.Design.dll
+C:\git\Alura-EntityFramework\Alura.Loja.Testes.ConsoleApp\bin\Debug\Microsoft.EntityFrameworkCore.Design.xml
