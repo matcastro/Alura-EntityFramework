@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,74 +14,57 @@ namespace Alura.Loja.Testes.ConsoleApp
     {
         static void Main(string[] args)
         {
-            //GravarUsandoAdoNet();
-            GravarUsandoEntity();
-            RecuperarProdutos();
-            AtualizarProduto();
-            RecuperarProdutos();
-            ExcluirProdutos();
-            RecuperarProdutos();
-        }
-
-        private static void AtualizarProduto()
-        {
-            using(var dao = new ProdutoDAO())
+            using(var contexto = new LojaContext())
             {
-                var produto = dao.Produtos().First();
-                produto.Nome += " - Editado";
-                dao.Atualizar(produto);
-            }
-        }
+                var serviceProvider = contexto.GetInfrastructure();
+                var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+                loggerFactory.AddProvider(SqlLoggerProvider.Create());
 
-        private static void ExcluirProdutos()
-        {
-            using(var dao = new ProdutoDAO())
-            {
-                var produtos = dao.Produtos();
-                foreach (var item in produtos)
+                // AdicionarProduto(contexto);
+                var produtos = contexto.Produtos.ToList();
+                foreach (var produto in produtos)
                 {
-                    dao.Remover(item);
-                }
+                    Console.WriteLine(produto);
+                }              
+
+                var entries = contexto.ChangeTracker.Entries();
+                ImprimeEstados(entries);
+                produtos[0].Nome = "Teste";
+                contexto.Update(produtos[0]);
+                ImprimeEstados(entries);
+                contexto.Remove(produtos[0]);
+                ImprimeEstados(entries);
+                produtos.Add(new Produto() { Nome = "Sorvete", Categoria = "Comida", Preco = 5 });
+                contexto.Add(produtos[1]);
+                ImprimeEstados(entries);
+                contexto.Remove(produtos[1]);
+                ImprimeEstados(entries);
+
+                var entry = contexto.Entry(produtos[1]);
+                contexto.SaveChanges();
+                Console.WriteLine(entry.State);
             }
         }
 
-        private static void RecuperarProdutos()
+        private static void ImprimeEstados(IEnumerable<EntityEntry> entries)
         {
-            using(var dao = new ProdutoDAO())
+            Console.WriteLine("=======");
+            foreach (var e in entries)
             {
-                var produtos = dao.Produtos();
-                Console.WriteLine($"Encontrados {produtos.Count} produto(s).");
-                foreach (var item in produtos)
-                {
-                    Console.WriteLine($"{item.Nome}");
-                }
+                Console.WriteLine(e.State);
             }
         }
 
-        private static void GravarUsandoEntity()
+        private static void AdicionarProduto(LojaContext contexto)
         {
-            Produto p = new Produto();
-            p.Nome = "Harry Potter e a Ordem da Fênix";
-            p.Categoria = "Livros";
-            p.Preco = 19.89;
-
-            using (var dao = new ProdutoDAO())
+            var produto = new Produto()
             {
-                dao.Adicionar(p);
-            }
-        }
-
-        private static void GravarUsandoAdoNet()
-        {
-            Produto p = new Produto();
-            p.Nome = "Harry Potter e a Ordem da Fênix";
-            p.Categoria = "Livros";
-            p.Preco = 19.89;
-
-            using (var repo = new ProdutoDAO())
-            {
-                repo.Adicionar(p);
-            }
+                Nome = "Pasta de Dente",
+                Categoria = "Higiene",
+                Preco = 1.99
+            };
+            contexto.Add(produto);
+            contexto.SaveChanges();
         }
     }
 }
