@@ -14,20 +14,38 @@ namespace Alura.Loja.Testes.ConsoleApp
     {
         static void Main(string[] args)
         {
-            var produto = new Produto()
+            var promocao = new Promocao();
+            promocao.Descricao = "Páscoa Feliz";
+            promocao.DataInicial = DateTime.Now;
+            promocao.DataFinal = DateTime.Now.AddMonths(3);
+            var p1 = new Produto()
             {
-                Nome = "Pão Francês",
+                Nome = "Barra de Chocolate",
                 Categoria = "Alimento",
-                PrecoUnitario = 0.4,
+                PrecoUnitario = 5.0,
+                Unidade = "gramas"
+            };
+
+            var p2 = new Produto()
+            {
+                Nome = "Boneca Bebê",
+                Categoria = "Brinquedo",
+                PrecoUnitario = 89.90,
                 Unidade = "Unidade"
             };
 
-            var compra = new Compra()
+            var p3 = new Produto()
             {
-                Quantidade = 6,
-                Produto = produto                
+                Nome = "Ovo de Páscoa",
+                Categoria = "Alimento",
+                PrecoUnitario = 35.0,
+                Unidade = "gramas"
             };
-            compra.Preco = compra.Quantidade * compra.Produto.PrecoUnitario;
+
+            promocao.IncluiProduto(p1);
+            promocao.IncluiProduto(p2);
+            promocao.IncluiProduto(p3);
+
             using (var contexto = new LojaContext())
             {
                 var serviceProvider = contexto.GetInfrastructure();
@@ -36,7 +54,9 @@ namespace Alura.Loja.Testes.ConsoleApp
 
                 var entries = contexto.ChangeTracker.Entries();
 
-                contexto.Add(compra);
+                var promo = contexto.Promocoes.First();
+                ImprimeEstados(entries);
+                contexto.Remove(promo);
                 ImprimeEstados(entries);
                 contexto.SaveChanges();
                 ImprimeEstados(entries);
@@ -48,7 +68,7 @@ namespace Alura.Loja.Testes.ConsoleApp
             Console.WriteLine("=======");
             foreach (var e in entries)
             {
-                Console.WriteLine(e.State);
+                Console.WriteLine($"{e.State} - {e.Entity}");
             }
         }
 
