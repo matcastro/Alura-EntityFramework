@@ -14,6 +14,34 @@ namespace Alura.Loja.Testes.ConsoleApp
     {
         static void Main(string[] args)
         {
+            var cliente = new Cliente();
+            cliente.Nome = "Nome Teste";
+            cliente.Endereco = new Endereco()
+            {
+                Rua = "Rua 1",
+                Numero = 1,
+                Complemento = "sobrado",
+                Bairro = "Dom João",
+                Cidade = "Cidade do Cabo"
+            };
+
+            using (var contexto = new LojaContext())
+            {
+                var serviceProvider = contexto.GetInfrastructure();
+                var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+                loggerFactory.AddProvider(SqlLoggerProvider.Create());
+
+                var entries = contexto.ChangeTracker.Entries();
+
+                contexto.Add(cliente);
+                ImprimeEstados(entries);
+                contexto.SaveChanges();
+                ImprimeEstados(entries);
+            }
+        }
+
+        private static void NParaN()
+        {
             var promocao = new Promocao();
             promocao.Descricao = "Páscoa Feliz";
             promocao.DataInicial = DateTime.Now;
@@ -62,7 +90,6 @@ namespace Alura.Loja.Testes.ConsoleApp
                 ImprimeEstados(entries);
             }
         }
-
         private static void ImprimeEstados(IEnumerable<EntityEntry> entries)
         {
             Console.WriteLine("=======");
